@@ -8,15 +8,37 @@ module.exports = {
             res.json(results)
         })
     },
-    getSingleUser: function () {
 
-    },
+
+    
+    getSingleUser(req, res) {
+        User.findOne({_id: req.params.userId} )
+        .select('-__v')
+        .then(async (user) =>
+        !user
+        ? res.status(404).json({message: 'No user found'})
+        : res.json({
+            user,
+
+        })
+        )
+        .catch((err) => {
+            console.log(err);
+            return res.status(500).json(err);
+          });
+        },
+
+
+
     createUser: function (req, res) {
         User.create(req.body)
         .then(result => {
             res.json(result)
         })
     },
+
+
+
     deleteUser: function () {
 
     },
