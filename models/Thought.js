@@ -12,27 +12,30 @@ const thoughtSchema = new Schema(
     },
     createdAt: {
       type: Date,
-      default: Date.now,
-      get: function (date) {
-        return moment(date).format("MM-DD-YYYY")
-      }
-    },
+      default: Date.now(),
+      get: timestamp => dateFormat(timestamp)
+      
+      },
     username: {
-      type: Number,
+      type: String,
       required: true,
-      default: () => Math.floor(Math.random() * (100 - 70 + 1) + 70),
+
     },
-    reactions: {
-      type: Date,
-      default: Date.now,
-    },
-  },
-  {
-    toJSON: {
-      getters: true,
-    },
-    id: false,
-  }
+    reactions:[reactionSchema]
+      },
+      {
+        toJSON: {
+          getters: true,
+          virtuals: true,
+        },
+        id: false
+      }
 );
 
-module.exports = reactionCount;
+thoughtSchema.virtual('reactionCount').get(function() {
+  return this.reactions.length
+});
+
+const Thought = model('Thought', thoughtSchema);
+
+module.export = Thought;
