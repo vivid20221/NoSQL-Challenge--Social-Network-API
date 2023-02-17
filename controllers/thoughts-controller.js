@@ -28,19 +28,16 @@ const thoughtControllers = {
     async createThought(req, res) {
       try {
         const newThought = await Thought.create(req.body);
-        await User.findOneUpdate(
-          { user: newThought.username },
-          { $push: { thoughts: newThought._id} },
-          { new: true}
-          
-          );
-          res.status(200).json(newthought);
-        } catch (err) {
-          res.status(500).json(err);
+        await User.findOneAndUpdate(
+          { _id: req.body.userId },
+          { $push: { thoughts: newThought._id } },
+          { new: true }
+        );
+        res.status(200).json(newThought);
+      } catch (err) {
+        res.status(500).json(err);
       }
-
-
-      },
+    },
       async updateThought(req, res) {
         try {
           const updatedThought = await Thought.findOneAndUpdate(
@@ -59,8 +56,8 @@ const thoughtControllers = {
         },
         async deleteThought(req, res) { 
           try {
-            const deletedThought = await Thought.findIneAndRemove
-            ({
+            const deletedThought = await Thought.findIneAndRemove(
+              {
               _id: req.params.id,
 
             });
